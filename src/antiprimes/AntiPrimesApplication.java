@@ -19,6 +19,7 @@ public class AntiPrimesApplication {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 MainWindow window = new MainWindow(sequence);
+                sequence.addObserver(window);
                 window.setVisible(true);
             }
         });

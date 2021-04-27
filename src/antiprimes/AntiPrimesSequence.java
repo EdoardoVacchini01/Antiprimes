@@ -2,23 +2,27 @@ package antiprimes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 
 /**
  * Represent the sequence of antiprimes found so far.
  */
-public class AntiPrimesSequence {
+public class AntiPrimesSequence extends Observable{
 
     /**
      * The numbers in the sequence.
      */
     private List<Number> antiPrimes = new ArrayList<>();
+    NumberProcessor thread;
 
     /**
      * Create a new sequence containing only the first antiprime (the number '1').
      */
     public AntiPrimesSequence() {
         this.reset();
+        thread = new NumberProcessor(this);
+    	thread.start();
     }
 
     /**
@@ -33,13 +37,14 @@ public class AntiPrimesSequence {
      * Find a new antiprime and add it to the sequence.
      */
     public void computeNext() {
-        antiPrimes.add(AntiPrimes.nextAntiPrimeAfter(getLast()));
+        //antiPrimes.add(AntiPrimes.nextAntiPrimeAfter(getLast()));
+    	thread.nextAntiprime(this.getLast());
     }
 
     /**
      * Return the last antiprime found.
      */
-    public Number getLast() {
+    public synchronized Number getLast() {
         int n = antiPrimes.size();
         return antiPrimes.get(n - 1);
     }
@@ -47,10 +52,17 @@ public class AntiPrimesSequence {
     /**
      * Return the last k antiprimes found.
      */
-    public List<Number> getLastK(int k) {
+    public synchronized List<Number> getLastK(int k) {
         int n = antiPrimes.size();
         if (k > n)
             k = n;
         return antiPrimes.subList(n - k, n);
+    }    
+    
+    public synchronized void addAntiPrime(Number number) {
+    	this.antiPrimes.add(number);
+    	this.setChanged();
+    	this.notifyObservers();
     }
+    
 }
