@@ -28,7 +28,7 @@ public class AntiPrimesSequence extends Observable{
     /**
      * Clear the sequence so that it contains only the first antiprime (the number '1').
      */
-    public void reset() {
+    public synchronized void reset() {
         antiPrimes.clear();
         antiPrimes.add(new Number(1, 1));
     }
